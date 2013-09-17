@@ -11,6 +11,7 @@
 #include <string.h>
 
 /**
+ * @brief založí data do bufferu - natvrdo nakopíruje
  * @return 1 když je buffer plné
  * 	0 když se to povede tam narvat
  */
@@ -33,6 +34,7 @@ uint8_t bufPut(buffer_t * handle, const void * data)
 }
 
 /**
+ * @brief vytáhne data z bufferu
  * @return 1 když je buffer prázdné
  * 	0 když něco vrátí
  */
@@ -57,6 +59,9 @@ uint8_t bufGet(buffer_t * handle, void ** retData, buffer_cpy_t cpy)
 	return 0;
 }
 
+/**
+ * @brief zjištuje jestli je v bufferu ještě místo
+ */
 uint8_t bufIsFull(const buffer_t * handle)
 {
 	uint8_t head = handle->head;
@@ -71,6 +76,9 @@ uint8_t bufIsFull(const buffer_t * handle)
 	return 0;
 }
 
+/**
+ * @brief zjistí jestli je buffer prázdné
+ */
 uint8_t bufIsEmpty(const buffer_t * handle)
 {
 	return (handle->head == handle->tail);

@@ -9,30 +9,55 @@
 #define SCHEDULER_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #include <inttypes.h>
 #include <stddef.h>
 #include "scheduler_port.h"
 
+/**
+ * @ingroup scheduler
+ * @{
+ */
+
+/**
+ * @brief volat callback periodicky nebo jenom jednou
+ */
 typedef enum
 {
-	ONCE, PERIODIC
+	/// jenom jednou
+	ONCE,
+	/// periodicky
+	PERIODIC
 } sh_t;
-typedef uint32_t systime_t;
-typedef void * arg_t;
-typedef void (*method_t)(arg_t);
 
+/// @brief systémový čas
+typedef uint32_t systime_t;
+/// @brief argument callbacku
+typedef void * arg_t;
+/// @brief callback
+typedef void (*method_t)(arg_t);
+/// @brief struktura pro delay
 typedef struct delay_t delay_t;
 
+/**
+ * @brief struktura jednoho delaye
+ */
 struct delay_t
 {
+	/// callback co se bude volat
 	method_t method;
+	/// argument kterej dostane
 	arg_t arg;
+	/// doba v tickách timecounteru za jak dlouho se má volat
 	systime_t period;
+	/// uloženo kdy byl naposled volané
 	systime_t last;
+	/// typ jesli pořád dokola nebo jenom jednou
 	sh_t type;
+	/// další delay v seznamu - linkovaný seznam
 	delay_t * next;
 };
 
@@ -43,30 +68,12 @@ void shUnregisterStruct(delay_t * del);
 void shPlay(void);
 inline void shInit(void);
 void shRearm(delay_t * del);
-uint8_t shIsRegistered(delay_t * del);
+uint8_t shIsRegistered(const delay_t * del);
 systime_t shNow(void);
 
-typedef struct sequencer_t sequencer_t;
-
-typedef struct
-{
-    arg_t arg;
-    uint16_t cycles;
-} seqItem_t;
-
-struct sequencer_t
-{
-    uint8_t actualState;
-    method_t cb;
-    delay_t * del;
-    const seqItem_t * items;
-    method_t endCb;
-};
-
-void seqPlay(sequencer_t * sequencer, delay_t * delay, const seqItem_t * items, method_t cb, method_t endCb);
-
-void timeoutRearm(systime_t * timeout, systime_t time);
-uint8_t timeoutReached(const systime_t * timeout);
+/**
+ * @}
+ */
 
 #ifdef __cplusplus
 }
